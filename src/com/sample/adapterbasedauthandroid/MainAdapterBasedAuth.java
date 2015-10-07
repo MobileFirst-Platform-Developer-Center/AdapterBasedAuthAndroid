@@ -35,8 +35,9 @@ public class MainAdapterBasedAuth extends Activity {
 	private static TextView mainText = null;
 	private Button invokeBtn, logoutBtn;	
 	private static MainAdapterBasedAuth otherThis;
-
-	private AndroidChallengeHandler challengeHandler;
+	
+	private WLClient client;
+	private AndroidChallengeHandler challengeHandler;	
 	private String realm = "AuthRealm";
 	
 	@Override
@@ -49,7 +50,8 @@ public class MainAdapterBasedAuth extends Activity {
 
 		otherThis = this;
 		
-		final WLClient client = WLClient.createInstance(this);
+		//final WLClient client = WLClient.createInstance(this);
+		client = WLClient.createInstance(this);
 		challengeHandler = new AndroidChallengeHandler(this, realm);
 		client.registerChallengeHandler(challengeHandler);
 		client.connect(new MyConnectionListener());

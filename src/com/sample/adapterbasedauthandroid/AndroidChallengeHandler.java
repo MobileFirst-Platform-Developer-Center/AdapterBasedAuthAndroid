@@ -52,8 +52,8 @@ public class AndroidChallengeHandler extends ChallengeHandler{
 		try {
 			if(response!= null && 
 					response.getResponseJSON()!=null && 
-					response.getResponseJSON().isNull("authRequired") != true && 
-					response.getResponseJSON().getBoolean("authRequired") == true){
+					!response.getResponseJSON().isNull("authStatus") && 
+					response.getResponseJSON().getString("authStatus") != ""){
 				return true;
 			}
 		} catch (JSONException e) {
@@ -65,8 +65,19 @@ public class AndroidChallengeHandler extends ChallengeHandler{
 	@Override
 	public void handleChallenge(WLResponse response){ 
 		cachedResponse = response;
-		Intent login = new Intent(parentActivity, LoginAdapterBasedAuth.class);
-		parentActivity.startActivityForResult(login, 1);
+		try {
+			if(response.getResponseJSON().getString("authStatus").equals("credentialsRequired")){
+				MainAdapterBasedAuth.setMainText("handleChallenge->credentialsRequired");
+				Intent login = new Intent(parentActivity, LoginAdapterBasedAuth.class);
+				parentActivity.startActivityForResult(login, 1);
+			}
+			else if(response.getResponseJSON().getString("authStatus").equals("complete")){
+				submitSuccess(cachedResponse);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
